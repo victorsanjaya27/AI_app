@@ -6,9 +6,6 @@ module.exports = async (req, res) => {
   }
 
   const prompt = req.body.prompt;
-  if (!prompt || prompt.trim() === "") {
-    return res.status(400).json({ error: "Prompt tidak boleh kosong" });
-  }
 
   try {
     const response = await axios.post(
@@ -21,20 +18,16 @@ module.exports = async (req, res) => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://namaproject.vercel.app", // ganti sesuai domain Vercel kamu
+          "HTTP-Referer": "https://ai-app-black-iota.vercel.app/", // sesuaikan dengan domainmu
           "X-Title": "Depseek AI App",
         },
-        timeout: 10000,
       }
     );
 
     const aiResponse = response.data.choices[0].message.content;
     res.status(200).json({ response: aiResponse });
   } catch (error) {
-    console.error(
-      "OpenRouter API error:",
-      error.response?.data || error.message
-    );
+    console.error("OpenRouter API error:", error.response?.data || error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
